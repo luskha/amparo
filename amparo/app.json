@@ -11,18 +11,25 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.healthcare.amparo"
+      "package": "com.healthcare.amparo",
+      "config": {
+        "googleSignIn": {
+          "apiKey": "AIzaSyBanQCj5kCHU8OjLWi-9wrgO3aD1rXnLuI"
+        }
+      }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "config": {
+        "googleSignIn": {
+          "client_id": "855590427237-8u7etnm87qladq812fpcmmm2pb07ppmi.apps.googleusercontent.com"
+        }
+      }
     },
     "extra": {
       "eas": {

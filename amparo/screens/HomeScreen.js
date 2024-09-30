@@ -13,7 +13,7 @@ const HomeScreen = () => {
         <Text style={styles.buttonText}>Agendamento de Consulta</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => alert('Em construção')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ListagemMedicamentos')}>
         <Text style={styles.buttonText}>Lembretes de Medicamentos</Text>
       </TouchableOpacity>
 
