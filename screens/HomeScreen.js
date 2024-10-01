@@ -9,19 +9,23 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Menu Principal</Text>
 
+      {/* Navegar para Agendamento de Consultas */}
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Agendamento')}>
         <Text style={styles.buttonText}>Agendamento de Consulta</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => alert('Em construção')}>
+      {/* Navegar para a tela de Lembretes de Medicamentos */}
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Medicamentos')}>
         <Text style={styles.buttonText}>Lembretes de Medicamentos</Text>
       </TouchableOpacity>
 
+      {/* Botão de Transporte ainda em construção */}
       <TouchableOpacity style={styles.button} onPress={() => alert('Em construção')}>
         <Text style={styles.buttonText}>Transporte</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => alert('Em construção')}>
+      {/* Navegar para a tela de Atividades Sociais */}
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AtividadesSociais')}>
         <Text style={styles.buttonText}>Atividades Sociais</Text>
       </TouchableOpacity>
     </View>
