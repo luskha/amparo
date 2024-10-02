@@ -15,7 +15,7 @@ const WelcomeScreen = () => {
       style={styles.background}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>Bem-vindo ao App!</Text>
+        <Text style={styles.title}> </Text>
         <TouchableOpacity style={styles.button} onPress={handleEnter}>
           <Text style={styles.buttonText}>INICIAR</Text>
         </TouchableOpacity>
@@ -32,10 +32,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    backgroundColor: 'rgba(0, 0, 0, 0.15)',
   },
   title: {
     fontSize: 28,
@@ -44,6 +43,8 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   button: {
+    position: 'absolute', // Torna a posição do botão relativa à tela
+    bottom: 50, // Ajuste este valor para mover o botão para cima ou para baixo
     backgroundColor: '#28a745',
     paddingVertical: 15,
     paddingHorizontal: 40,

@@ -40,6 +40,14 @@ const LoginScreen = () => {
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>ENTRAR</Text>
         </TouchableOpacity>
+
+        {/* Botão de cadastro */}
+        <TouchableOpacity 
+          style={styles.cadastroButton} 
+          onPress={() => navigation.navigate('Cadastro')} // Navegar para tela de cadastro
+        >
+          <Text style={styles.cadastroText}>Não tem uma conta? Cadastre-se aqui</Text>
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
@@ -87,6 +95,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  cadastroButton: {
+    marginTop: 20,
+  },
+  cadastroText: {
+    color: '#e6e9ed',
+    fontSize: 16,
+    textDecorationLine: 'underline',
   },
 });
 

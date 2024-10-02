@@ -9,6 +9,7 @@ import HomeScreen from './screens/HomeScreen';
 import AgendamentoScreen from './screens/AgendamentoScreen';
 import MedicamentosScreen from './screens/MedicamentosScreen';
 import AtividadesSociaisScreen from './screens/AtividadesSociaisScreen';
+import CadastroScreen from './screens/CadastroScreen';
 
 const Stack = createStackNavigator();
 
@@ -51,7 +52,7 @@ const App = () => {
         <Stack.Screen 
           name="Welcome" 
           component={WelcomeScreen} 
-          options={{ title: 'Welcome' }}
+          options={{ title: 'Amparo+' }}
         />
         <Stack.Screen 
           name="Login" 
@@ -78,15 +79,20 @@ const App = () => {
           component={AtividadesSociaisScreen} 
           options={{ title: 'Atividades Sociais' }}
         />
+        <Stack.Screen
+        name='Cadastro'
+        component={CadastroScreen}
+        options={{ title: 'Cadastre-se'}}
+        />
       </Stack.Navigator>
 
       {/* Botão de exemplo para testar notificações */}
-      <Button
+      {/* <Button
         title="Testar Notificação"
         onPress={async () => {
           await schedulePushNotification();
         }}
-      />
+      /> */}
     </NavigationContainer>
   );
 };
