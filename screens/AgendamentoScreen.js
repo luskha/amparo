@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Alert, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import LoadingScreen from '../assets/loadingSplash/animation.js'; // Importando o componente de animação
+import agendamento from '../assets/animations/agendamento.json'; // Animação específica para agendamentos
 
 const AgendamentoScreen = () => {
   const [date, setDate] = useState(new Date());
@@ -9,9 +11,12 @@ const AgendamentoScreen = () => {
   const [time, setTime] = useState(new Date());
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [consultas, setConsultas] = useState([]);
+  const [loading, setLoading] = useState(true); // Estado para o carregamento
 
   useEffect(() => {
     requestPermissions();
+    // Simulando um tempo de carregamento para exibir a animação
+    setTimeout(() => setLoading(false), 5000); // Ajuste o tempo conforme necessário
   }, []);
 
   const requestPermissions = async () => {
@@ -71,6 +76,11 @@ const AgendamentoScreen = () => {
       )}
     </View>
   );
+
+  // Exibir a tela de carregamento se o estado 'loading' for verdadeiro
+  if (loading) {
+    return <LoadingScreen message="Carregando Agendamentos..." animationSource={agendamento} />;
+  }
 
   return (
     <View style={styles.container}>

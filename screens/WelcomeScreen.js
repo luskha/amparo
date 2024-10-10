@@ -11,7 +11,7 @@ const WelcomeScreen = () => {
 
   return (
     <ImageBackground 
-      source={require('../assets/background.png')} // Imagem de fundo
+      source={require('../assets/gifs/background.gif')} // Imagem de fundo
       style={styles.background}
     >
       <View style={styles.container}>
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
   },
   title: {
     fontSize: 28,
@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
   },
   button: {
     position: 'absolute', // Torna a posição do botão relativa à tela
-    bottom: 50, // Ajuste este valor para mover o botão para cima ou para baixo
-    backgroundColor: '#28a745',
+    bottom: 200, // Ajuste este valor para mover o botão para cima ou para baixo
+    backgroundColor: '#ff67d0',
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 10,

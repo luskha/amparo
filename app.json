@@ -19,7 +19,13 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.healthcare.amparo"
+      "package": "com.healthcare.amparo",
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "WAKE_LOCK",
+        "SCHEDULE_EXACT_ALARM"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -27,7 +33,12 @@
     "extra": {
       "eas": {
         "projectId": "cd0f05f1-197a-4d10-bea8-e15656900bb4"
-      }
+      },
+      "PGHOST": "ep-dry-snow-a5yl5ik2.us-east-2.aws.neon.tech",
+      "PGDATABASE": "amparoplus",
+      "PGUSER": "amparo_health_care",
+      "PGPASSWORD": "6SOepH8hyCsb",
+      "PGPORT": "5432"
     }
   }
 }

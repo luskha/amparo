@@ -1,5 +1,7 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ImageBackground, Image } from 'react-native';
+import LoadingScreen from '../assets/loadingSplash/animation.js';
+import atividadesAnimation from '../assets/animations/atividades.json'; // Certifique-se de importar o arquivo JSON corretamente
 
 const atividades = [
   { id: '1', nome: 'Caminhada' },
@@ -12,21 +14,34 @@ const atividades = [
 ];
 
 const AtividadesSociaisScreen = () => {
-  
-  // Função para quando a atividade for selecionada
+  const [loading, setLoading] = useState(true); // Estado para o carregamento
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 3000); // Simulando o tempo de carregamento
+  }, []);
+
   const handleAtividadePress = (atividadeNome) => {
     alert(`Você escolheu participar de: ${atividadeNome}`);
   };
 
-  // Renderiza cada item da lista de atividades
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.item} onPress={() => handleAtividadePress(item.nome)}>
       <Text style={styles.itemText}>{item.nome}</Text>
     </TouchableOpacity>
   );
 
+  if (loading) {
+    return <LoadingScreen animationSource={atividadesAnimation} message="Carregando Atividades..." />;
+  }
+
   return (
     <View style={styles.container}>
+
+      {/* Imagem de background */}
+      <ImageBackground
+        source={require('../assets/home-bg.png')} // Defina o caminho da sua imagem de fundo aqui
+        style={styles.background}
+      />
       <Text style={styles.title}>Atividades Sociais</Text>
       <FlatList
         data={atividades}
@@ -41,7 +56,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#6babc9',
+    backgroundColor: '#fff',
+  },
+  background: {
+    flex: 1,
+    resizeMode: 'cover', // Ajusta a imagem para cobrir toda a tela
   },
   title: {
     fontSize: 24,

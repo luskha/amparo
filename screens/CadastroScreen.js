@@ -1,33 +1,55 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import { TextInputMask } from 'react-native-masked-text';
 
 const CadastroScreen = () => {
-  const [tipoUsuario, setTipoUsuario] = useState('paciente'); // Estado para o tipo de usuário
+  const navigation = useNavigation();
+  const [tipoUsuario, setTipoUsuario] = useState('paciente');
   const [nome, setNome] = useState('');
   const [cpf, setCpf] = useState('');
   const [telefone, setTelefone] = useState('');
+  const [numeroEmergencia, setNumeroEmergencia] = useState(''); // Campo para emergência
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
   const [endereco, setEndereco] = useState('');
   const [cep, setCep] = useState('');
+  const [nacionalidade, setNacionalidade] = useState('brasileiro'); // Nacionalidade padrão Brasil
   const [certificadoRegistro, setCertificadoRegistro] = useState('');
   const [nomeInstituicao, setNomeInstituicao] = useState('');
   const [horariosAtendimento, setHorariosAtendimento] = useState('');
   const [nomeFantasia, setNomeFantasia] = useState('');
   const [horariosFuncionamento, setHorariosFuncionamento] = useState('');
 
-  const handleCadastro = () => {
-    // Lógica de cadastro aqui
-    console.log({
+  // Função para determinar o código de país
+  const getPhonePrefix = () => {
+    if (nacionalidade === 'brasileiro') {
+      return '+55';
+    }
+    return ''; // Outros países podem ser adicionados se necessário
+  };
+
+  const handleCadastro = async () => {
+    if (!nome || !cpf || !telefone || !email || !senha) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    const formattedDataNascimento = dataNascimento.split('/').reverse().join('-');
+    const formatPhoneNumber = (number) => number.replace(/[^0-9]/g, ''); 
+
+    const payload = {
       tipoUsuario,
       nome,
       cpf,
-      telefone,
+      telefone: formatPhoneNumber(`${getPhonePrefix()}${telefone}`), // Adiciona o código de país no número
+      numeroEmergencia: formatPhoneNumber(`${getPhonePrefix()}${numeroEmergencia}`), // Aplica código no número de emergência
       email,
       senha,
-      dataNascimento,
+      dataNascimento: formattedDataNascimento, // Data formatada para o banco
       endereco,
       cep,
       certificadoRegistro,
@@ -35,7 +57,27 @@ const CadastroScreen = () => {
       horariosAtendimento,
       nomeFantasia,
       horariosFuncionamento,
-    });
+    };
+
+    console.log(payload); // Log do payload para depuração
+
+    try {
+      const response = await axios.post('https://amparo-api-4p3q.onrender.com/cadastro', payload);
+      const data = response.data;
+
+      if (data.success) {
+        alert('Cadastro realizado com sucesso!');
+        navigation.navigate('Login');
+      } else {
+        alert(data.message || 'Erro ao realizar cadastro.');
+      }
+    } catch (error) {
+      console.error('Erro no cadastro:', error);
+      if (error.response) {
+        console.error('Resposta do servidor:', error.response.data);
+      }
+      alert('Erro ao realizar cadastro. Tente novamente.');
+    }
   };
 
   return (
@@ -55,6 +97,18 @@ const CadastroScreen = () => {
         </Picker>
       </View>
 
+      <Text style={styles.label}>Selecione a Nacionalidade:</Text>
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={nacionalidade}
+          style={styles.picker}
+          onValueChange={(itemValue) => setNacionalidade(itemValue)}
+        >
+          <Picker.Item label="Brasileiro" value="brasileiro" />
+          <Picker.Item label="Outro" value="outro" />
+        </Picker>
+      </View>
+
       {tipoUsuario === 'paciente' || tipoUsuario === 'assistente' ? (
         <>
           <TextInput
@@ -64,21 +118,38 @@ const CadastroScreen = () => {
             style={styles.input}
             placeholderTextColor="#aaa"
           />
-          <TextInput
+          <TextInputMask
             placeholder="CPF"
             value={cpf}
             onChangeText={setCpf}
             style={styles.input}
             placeholderTextColor="#aaa"
             keyboardType="numeric"
+            type={'cpf'}
           />
-          <TextInput
+          <TextInputMask
             placeholder="Número de Telefone"
             value={telefone}
             onChangeText={setTelefone}
             style={styles.input}
             placeholderTextColor="#aaa"
             keyboardType="phone-pad"
+            type={'custom'}
+            options={{
+              mask: '(99) 99999-9999', // Máscara de telefone
+            }}
+          />
+          <TextInputMask
+            placeholder="Número de Emergência"
+            value={numeroEmergencia}
+            onChangeText={setNumeroEmergencia}
+            style={styles.input}
+            placeholderTextColor="#aaa"
+            keyboardType="phone-pad"
+            type={'custom'}
+            options={{
+              mask: '(99) 99999-9999', // Máscara de telefone
+            }}
           />
           <TextInput
             placeholder="Email"
@@ -96,12 +167,16 @@ const CadastroScreen = () => {
             style={styles.input}
             placeholderTextColor="#aaa"
           />
-          <TextInput
+          <TextInputMask
             placeholder="Data de Nascimento"
             value={dataNascimento}
             onChangeText={setDataNascimento}
             style={styles.input}
             placeholderTextColor="#aaa"
+            type={'datetime'}
+            options={{
+              format: 'DD/MM/YYYY', // Máscara de data
+            }}
           />
           <TextInput
             placeholder="Endereço"
@@ -110,12 +185,16 @@ const CadastroScreen = () => {
             style={styles.input}
             placeholderTextColor="#aaa"
           />
-          <TextInput
+          <TextInputMask
             placeholder="CEP"
             value={cep}
             onChangeText={setCep}
             style={styles.input}
             placeholderTextColor="#aaa"
+            type={'custom'}
+            options={{
+              mask: '99999-999', // Máscara de CEP
+            }}
           />
         </>
       ) : (
@@ -181,7 +260,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f7f7f7', // Fundo suave
+    backgroundColor: '#f7f7f7',
   },
   title: {
     fontSize: 28,
@@ -192,41 +271,33 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     color: '#555',
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 15,
-    marginBottom: 15,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    fontSize: 16,
+    marginBottom: 8,
   },
   pickerContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
     marginBottom: 15,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    shadowOffset: { width: 0, height: 3 },
   },
   picker: {
     height: 50,
     width: '100%',
   },
+  input: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    backgroundColor: '#fff',
+  },
   button: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#007BFF',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 5,
     alignItems: 'center',
-    marginTop: 20,
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
   },
 });
 

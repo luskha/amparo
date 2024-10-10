@@ -1,23 +1,34 @@
 import React, { useState } from 'react';
 import { View, TextInput, Alert, StyleSheet, Text, ImageBackground, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios'; // Importa axios
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
-  const handleLogin = () => {
-    if (email === 'acesso@teste.com' && password === '123456') {
-      navigation.navigate('Home');
-    } else {
-      Alert.alert('Login Falhou', 'Usuário ou senha incorretos');
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('https://amparo-api-4p3q.onrender.com/login', {
+        email,
+        senha: password,
+      });
+
+      if (response.data.success) {
+        navigation.navigate('Home'); // Navega para a tela "Home" após login bem-sucedido
+      } else {
+        Alert.alert('Erro', 'Usuário ou senha incorretos');
+      }
+    } catch (error) {
+      console.error('Erro na autenticação:', error);
+      Alert.alert('Erro', 'Não foi possível realizar o login. Tente novamente.');
     }
   };
 
   return (
     <ImageBackground 
-      source={require('../assets/background.png')} 
+      source={require('../assets/gifs/background.gif')} 
       style={styles.background}
     >
       <View style={styles.container}>

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Constants from 'expo-constants';
 import { Button, Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { NavigationContainer } from '@react-navigation/native';
@@ -10,6 +11,9 @@ import AgendamentoScreen from './screens/AgendamentoScreen';
 import MedicamentosScreen from './screens/MedicamentosScreen';
 import AtividadesSociaisScreen from './screens/AtividadesSociaisScreen';
 import CadastroScreen from './screens/CadastroScreen';
+import TransportesScreen from './screens/TransportesScreen';
+import PanicButton from './screens/PanicButton';  // Importando o botão de pânico
+import axios from 'axios';  // Adicionando a importação do Axios
 
 const Stack = createStackNavigator();
 
@@ -28,14 +32,23 @@ const App = () => {
 
   // Solicitar permissões de notificação
   useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    const registerForPushNotifications = async () => {
+      try {
+        const token = await registerForPushNotificationsAsync();
+        if (token) {
+          setExpoPushToken(token);
+        }
+      } catch (error) {
+        console.error('Erro ao registrar notificações:', error);
+      }
+    };
 
-    // Listener quando uma notificação é recebida
+    registerForPushNotifications();
+
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       console.log('Notificação recebida:', notification);
     });
 
-    // Listener quando o usuário interage com a notificação
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
       console.log('Usuário interagiu com a notificação:', response);
     });
@@ -79,35 +92,38 @@ const App = () => {
           component={AtividadesSociaisScreen} 
           options={{ title: 'Atividades Sociais' }}
         />
-        <Stack.Screen
-        name='Cadastro'
-        component={CadastroScreen}
-        options={{ title: 'Cadastre-se'}}
+        <Stack.Screen 
+          name="Cadastro" 
+          component={CadastroScreen} 
+          options={{ title: 'Cadastre-se' }}
+        />
+        <Stack.Screen 
+          name="Transportes" 
+          component={TransportesScreen}  // Adicionando a tela de transportes
+          options={{ title: 'Transportes' }}
+        />
+        <Stack.Screen 
+          name="PanicButton" 
+          component={PanicButton}  // Adicionando a tela do botão de pânico
+          options={{ title: 'Botão de Pânico' }}
         />
       </Stack.Navigator>
-
-      {/* Botão de exemplo para testar notificações */}
-      {/* <Button
-        title="Testar Notificação"
-        onPress={async () => {
-          await schedulePushNotification();
-        }}
-      /> */}
     </NavigationContainer>
   );
 };
 
+// Função para agendar notificações push
 async function schedulePushNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Hora do remédio!",
       body: "Lembrete para tomar seu medicamento.",
     },
-    trigger: { seconds: 5 }, // Notificação disparada após 5 segundos
+    trigger: { seconds: 5 },
   });
 }
 
-// Solicitar permissões para notificações
+// Função para registrar notificações push
 async function registerForPushNotificationsAsync() {
   let token;
   if (Platform.OS === 'android') {

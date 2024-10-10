@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Button, TextInput, Alert, TouchableOpacity, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import LoadingScreen from '../assets/loadingSplash/animation.js';
+import medicamentoAnimation from '../assets/animations/medicamento.json';
+import confirmandoAnimation from '../assets/animations/confirmando.json'
 
 const MedicamentosScreen = () => {
   const [medicamentos, setMedicamentos] = useState([]);
@@ -10,26 +13,43 @@ const MedicamentosScreen = () => {
   const [primeiraDose, setPrimeiraDose] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [loading, setLoading] = useState(true); // Estado para o carregamento inicial
+  const [addingLoading, setAddingLoading] = useState(false); // Estado para o carregamento ao adicionar medicamento
 
-  // Adicionar medicamento
+  // Simula um carregamento inicial
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false); // Após 3 segundos, a tela de carregamento inicial desaparece
+    }, 3000);
+
+    return () => clearTimeout(timer); // Limpa o timer ao desmontar
+  }, []);
+
+  // Função para adicionar medicamento
   const adicionarMedicamento = () => {
-    if (nome && frequencia && periodo && primeiraDose) {
-      const novoMedicamento = {
-        id: medicamentos.length + 1,
-        nome,
-        frequencia,
-        periodo,
-        primeiraDose,
-      };
-      setMedicamentos([...medicamentos, novoMedicamento]);
-      setNome('');
-      setFrequencia('');
-      setPeriodo('');
-      setPrimeiraDose(new Date());
-      Alert.alert('Sucesso', 'Medicamento adicionado!');
-    } else {
-      Alert.alert('Erro', 'Preencha todos os campos!');
-    }
+    setAddingLoading(true); // Ativa o estado de loading ao adicionar medicamento
+
+    // Simula um tempo de carregamento ao adicionar medicamento
+    setTimeout(() => {
+      if (nome && frequencia && periodo && primeiraDose) {
+        const novoMedicamento = {
+          id: medicamentos.length + 1,
+          nome,
+          frequencia,
+          periodo,
+          primeiraDose,
+        };
+        setMedicamentos([...medicamentos, novoMedicamento]);
+        setNome('');
+        setFrequencia('');
+        setPeriodo('');
+        setPrimeiraDose(new Date());
+        Alert.alert('Sucesso', 'Medicamento adicionado!');
+      } else {
+        Alert.alert('Erro', 'Preencha todos os campos!');
+      }
+      setAddingLoading(false); // Desativa o estado de loading após a operação
+    }, 3000); // Duração do carregamento (3 segundos)
   };
 
   // Remover medicamento
@@ -67,6 +87,16 @@ const MedicamentosScreen = () => {
       setPrimeiraDose(updatedDate);
     }
   };
+
+  // Se estiver carregando a tela inicial, exibe a animação de carregamento
+  if (loading) {
+    return <LoadingScreen message="Carregando medicamentos..." animationSource={medicamentoAnimation} />;
+  }
+
+  // Se estiver carregando ao adicionar medicamento, exibe a animação de carregamento
+  if (addingLoading) {
+    return <LoadingScreen message="Adicionando medicamento..." animationSource={confirmandoAnimation} />;
+  }
 
   return (
     <View style={styles.container}>
