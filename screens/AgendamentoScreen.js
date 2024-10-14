@@ -4,6 +4,7 @@ import * as Notifications from 'expo-notifications';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import LoadingScreen from '../assets/loadingSplash/animation.js'; // Importando o componente de animação
 import agendamento from '../assets/animations/agendamento.json'; // Animação específica para agendamentos
+import confirmacao from '../assets/animations/confirmando.json'; // Animação para confirmação
 
 const AgendamentoScreen = () => {
   const [date, setDate] = useState(new Date());
@@ -11,12 +12,13 @@ const AgendamentoScreen = () => {
   const [time, setTime] = useState(new Date());
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [consultas, setConsultas] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado para o carregamento
+  const [loading, setLoading] = useState(true); // Estado para o carregamento inicial
+  const [confirming, setConfirming] = useState(false); // Estado para confirmação de agendamento
 
   useEffect(() => {
     requestPermissions();
     // Simulando um tempo de carregamento para exibir a animação
-    setTimeout(() => setLoading(false), 5000); // Ajuste o tempo conforme necessário
+    setTimeout(() => setLoading(false), 6000); // Ajuste o tempo conforme necessário
   }, []);
 
   const requestPermissions = async () => {
@@ -40,6 +42,7 @@ const AgendamentoScreen = () => {
 
   const handleAgendamento = () => {
     if (date && time) {
+      setConfirming(true); // Exibe animação de confirmação
       const dataConsulta = new Date(date);
       dataConsulta.setHours(time.getHours());
       dataConsulta.setMinutes(time.getMinutes());
@@ -53,7 +56,10 @@ const AgendamentoScreen = () => {
       setConsultas([...consultas, novaConsulta]);
       agendarNotificacao(dataConsulta);
 
-      Alert.alert('Agendamento Confirmado', `Consulta marcada para ${dataConsulta.toLocaleDateString()} às ${dataConsulta.toLocaleTimeString()}`);
+      setTimeout(() => {
+        setConfirming(false); // Esconde a animação após o tempo definido
+        Alert.alert('Agendamento Confirmado', `Consulta marcada para ${dataConsulta.toLocaleDateString()} às ${dataConsulta.toLocaleTimeString()}`);
+      }, 4900); // Duração da animação
     } else {
       Alert.alert('Erro', 'Por favor, preencha todos os campos');
     }
@@ -80,6 +86,11 @@ const AgendamentoScreen = () => {
   // Exibir a tela de carregamento se o estado 'loading' for verdadeiro
   if (loading) {
     return <LoadingScreen message="Carregando Agendamentos..." animationSource={agendamento} />;
+  }
+
+  // Exibir a tela de confirmação se o estado 'confirming' for verdadeiro
+  if (confirming) {
+    return <LoadingScreen message="Confirmando agendamento..." animationSource={confirmacao} />;
   }
 
   return (
