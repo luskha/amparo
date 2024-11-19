@@ -38,7 +38,7 @@ const HomeScreen = ({ userId }) => {
         style={styles.background}
       >
         <View style={styles.overlay}>
-          <Text style={styles.title}>Menu Principal</Text>
+          <Text style={styles.title}></Text>
 
           {/* Botão de perfil no canto superior direito */}
           <TouchableOpacity

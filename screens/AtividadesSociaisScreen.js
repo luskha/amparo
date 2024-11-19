@@ -39,7 +39,7 @@ const AtividadesSociaisScreen = () => {
 
       {/* Imagem de background */}
       <ImageBackground
-        source={require('../assets/home-bg.png')} // Defina o caminho da sua imagem de fundo aqui
+        source={require('../assets/123.png')} // Defina o caminho da sua imagem de fundo aqui
         style={styles.background}
       />
       <Text style={styles.title}>Atividades Sociais</Text>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   item: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#5dc1b9',
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,

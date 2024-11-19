@@ -13,6 +13,7 @@ import AtividadesSociaisScreen from './screens/AtividadesSociaisScreen';
 import CadastroScreen from './screens/CadastroScreen';
 import TransportesScreen from './screens/TransportesScreen';
 import PanicButton from './screens/PanicButton';  // Importando o botão de pânico
+import ProfileScreen from './screens/ProfileScreen';  // Importando a tela de perfil
 import axios from 'axios';  // Adicionando a importação do Axios
 
 const Stack = createStackNavigator();
@@ -108,6 +109,11 @@ const App = () => {
           name="PanicButton" 
           component={PanicButton}  // Adicionando a tela do botão de pânico
           options={{ title: 'Botão de Pânico' }}
+        />
+        <Stack.Screen 
+          name="Perfil"  // Adicionando a tela de perfil
+          component={ProfileScreen}  
+          options={{ title: 'Perfil' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

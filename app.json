@@ -39,6 +39,9 @@
       "PGUSER": "amparo_health_care",
       "PGPASSWORD": "6SOepH8hyCsb",
       "PGPORT": "5432"
-    }
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }

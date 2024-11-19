@@ -11,26 +11,19 @@ const CadastroScreen = () => {
   const [nome, setNome] = useState('');
   const [cpf, setCpf] = useState('');
   const [telefone, setTelefone] = useState('');
-  const [numeroEmergencia, setNumeroEmergencia] = useState(''); // Campo para emergência
+  const [numeroEmergencia, setNumeroEmergencia] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
   const [endereco, setEndereco] = useState('');
   const [cep, setCep] = useState('');
-  const [nacionalidade, setNacionalidade] = useState('brasileiro'); // Nacionalidade padrão Brasil
   const [certificadoRegistro, setCertificadoRegistro] = useState('');
-  const [nomeInstituicao, setNomeInstituicao] = useState('');
   const [horariosAtendimento, setHorariosAtendimento] = useState('');
-  const [nomeFantasia, setNomeFantasia] = useState('');
-  const [horariosFuncionamento, setHorariosFuncionamento] = useState('');
+  const [diasAtendimento, setDiasAtendimento] = useState('');
+  const [areaAtuacao, setAreaAtuacao] = useState('');
+  const [outrosArea, setOutrosArea] = useState('');
 
-  // Função para determinar o código de país
-  const getPhonePrefix = () => {
-    if (nacionalidade === 'brasileiro') {
-      return '+55';
-    }
-    return ''; // Outros países podem ser adicionados se necessário
-  };
+  const getPhonePrefix = () => '+55';
 
   const handleCadastro = async () => {
     if (!nome || !cpf || !telefone || !email || !senha) {
@@ -39,27 +32,26 @@ const CadastroScreen = () => {
     }
 
     const formattedDataNascimento = dataNascimento.split('/').reverse().join('-');
-    const formatPhoneNumber = (number) => number.replace(/[^0-9]/g, ''); 
+    const formatPhoneNumber = (number) => number.replace(/[^0-9]/g, '');
 
     const payload = {
       tipoUsuario,
       nome,
       cpf,
-      telefone: formatPhoneNumber(`${getPhonePrefix()}${telefone}`), // Adiciona o código de país no número
-      numeroEmergencia: formatPhoneNumber(`${getPhonePrefix()}${numeroEmergencia}`), // Aplica código no número de emergência
+      telefone: formatPhoneNumber(`${getPhonePrefix()}${telefone}`),
+      numeroEmergencia: formatPhoneNumber(`${getPhonePrefix()}${numeroEmergencia}`),
       email,
       senha,
-      dataNascimento: formattedDataNascimento, // Data formatada para o banco
+      dataNascimento: formattedDataNascimento,
       endereco,
       cep,
-      certificadoRegistro,
-      nomeInstituicao,
-      horariosAtendimento,
-      nomeFantasia,
-      horariosFuncionamento,
+      certificadoRegistro: tipoUsuario === 'profissional' ? certificadoRegistro : null,
+      horariosAtendimento: tipoUsuario === 'profissional' ? horariosAtendimento : null,
+      diasAtendimento: tipoUsuario === 'profissional' ? diasAtendimento : null,
+      areaAtuacao: areaAtuacao === 'Outros' ? outrosArea : areaAtuacao,
     };
 
-    console.log(payload); // Log do payload para depuração
+    console.log(payload);
 
     try {
       const response = await axios.post('https://amparo-api-4p3q.onrender.com/cadastro', payload);
@@ -73,9 +65,6 @@ const CadastroScreen = () => {
       }
     } catch (error) {
       console.error('Erro no cadastro:', error);
-      if (error.response) {
-        console.error('Resposta do servidor:', error.response.data);
-      }
       alert('Erro ao realizar cadastro. Tente novamente.');
     }
   };
@@ -92,161 +81,158 @@ const CadastroScreen = () => {
           onValueChange={(itemValue) => setTipoUsuario(itemValue)}
         >
           <Picker.Item label="Paciente" value="paciente" />
-          <Picker.Item label="Assistente" value="assistente" />
-          <Picker.Item label="Instituição de Saúde" value="instituicao" />
+          <Picker.Item label="Profissional de Saúde" value="profissional" />
         </Picker>
       </View>
 
-      <Text style={styles.label}>Selecione a Nacionalidade:</Text>
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={nacionalidade}
-          style={styles.picker}
-          onValueChange={(itemValue) => setNacionalidade(itemValue)}
-        >
-          <Picker.Item label="Brasileiro" value="brasileiro" />
-          <Picker.Item label="Outro" value="outro" />
-        </Picker>
-      </View>
+      <TextInput
+        placeholder="Nome Completo"
+        value={nome}
+        onChangeText={setNome}
+        style={styles.input}
+        placeholderTextColor="#aaa"
+      />
+      <TextInputMask
+        placeholder="CPF"
+        value={cpf}
+        onChangeText={setCpf}
+        style={styles.input}
+        placeholderTextColor="#aaa"
+        keyboardType="numeric"
+        type={'cpf'}
+      />
+      <TextInputMask
+        placeholder="Número de Telefone"
+        value={telefone}
+        onChangeText={setTelefone}
+        style={styles.input}
+        placeholderTextColor="#aaa"
+        keyboardType="phone-pad"
+        type={'custom'}
+        options={{
+          mask: '(99) 99999-9999',
+        }}
+      />
+      <TextInputMask
+        placeholder="Número de Emergência"
+        value={numeroEmergencia}
+        onChangeText={setNumeroEmergencia}
+        style={styles.input}
+        placeholderTextColor="#aaa"
+        keyboardType="phone-pad"
+        type={'custom'}
+        options={{
+          mask: '(99) 99999-9999',
+        }}
+      />
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+        placeholderTextColor="#aaa"
+        keyboardType="email-address"
+      />
+      <TextInput
+        placeholder="Senha"
+        secureTextEntry
+        value={senha}
+        onChangeText={setSenha}
+        style={styles.input}
+        placeholderTextColor="#aaa"
+      />
+      <TextInputMask
+        placeholder="Data de Nascimento"
+        value={dataNascimento}
+        onChangeText={setDataNascimento}
+        style={styles.input}
+        placeholderTextColor="#aaa"
+        type={'datetime'}
+        options={{
+          format: 'DD/MM/YYYY',
+        }}
+      />
+      <TextInput
+        placeholder="Endereço"
+        value={endereco}
+        onChangeText={setEndereco}
+        style={styles.input}
+        placeholderTextColor="#aaa"
+      />
+      <TextInputMask
+        placeholder="CEP"
+        value={cep}
+        onChangeText={setCep}
+        style={styles.input}
+        placeholderTextColor="#aaa"
+        type={'custom'}
+        options={{
+          mask: '99999-999',
+        }}
+      />
 
-      {tipoUsuario === 'paciente' || tipoUsuario === 'assistente' ? (
-        <>
-          <TextInput
-            placeholder="Nome Completo"
-            value={nome}
-            onChangeText={setNome}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-          />
-          <TextInputMask
-            placeholder="CPF"
-            value={cpf}
-            onChangeText={setCpf}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-            keyboardType="numeric"
-            type={'cpf'}
-          />
-          <TextInputMask
-            placeholder="Número de Telefone"
-            value={telefone}
-            onChangeText={setTelefone}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-            keyboardType="phone-pad"
-            type={'custom'}
-            options={{
-              mask: '(99) 99999-9999', // Máscara de telefone
-            }}
-          />
-          <TextInputMask
-            placeholder="Número de Emergência"
-            value={numeroEmergencia}
-            onChangeText={setNumeroEmergencia}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-            keyboardType="phone-pad"
-            type={'custom'}
-            options={{
-              mask: '(99) 99999-9999', // Máscara de telefone
-            }}
-          />
-          <TextInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-            keyboardType="email-address"
-          />
-          <TextInput
-            placeholder="Senha"
-            secureTextEntry
-            value={senha}
-            onChangeText={setSenha}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-          />
-          <TextInputMask
-            placeholder="Data de Nascimento"
-            value={dataNascimento}
-            onChangeText={setDataNascimento}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-            type={'datetime'}
-            options={{
-              format: 'DD/MM/YYYY', // Máscara de data
-            }}
-          />
-          <TextInput
-            placeholder="Endereço"
-            value={endereco}
-            onChangeText={setEndereco}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-          />
-          <TextInputMask
-            placeholder="CEP"
-            value={cep}
-            onChangeText={setCep}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-            type={'custom'}
-            options={{
-              mask: '99999-999', // Máscara de CEP
-            }}
-          />
-        </>
-      ) : (
-        <>
-          <TextInput
-            placeholder="Nome da Instituição"
-            value={nomeInstituicao}
-            onChangeText={setNomeInstituicao}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-          />
-          {tipoUsuario === 'instituicao' && (
-            <>
-              <TextInput
-                placeholder="Certificado de Registro (Ex: CRM)"
-                value={certificadoRegistro}
-                onChangeText={setCertificadoRegistro}
-                style={styles.input}
-                placeholderTextColor="#aaa"
-              />
-              <TextInput
-                placeholder="Horários de Atendimento Online"
-                value={horariosAtendimento}
-                onChangeText={setHorariosAtendimento}
-                style={styles.input}
-                placeholderTextColor="#aaa"
-              />
-              <TextInput
-                placeholder="Nome Fantasia"
-                value={nomeFantasia}
-                onChangeText={setNomeFantasia}
-                style={styles.input}
-                placeholderTextColor="#aaa"
-              />
-              <TextInput
-                placeholder="Horários de Funcionamento"
-                value={horariosFuncionamento}
-                onChangeText={setHorariosFuncionamento}
-                style={styles.input}
-                placeholderTextColor="#aaa"
-              />
-              <TextInput
-                placeholder="Endereço"
-                value={endereco}
-                onChangeText={setEndereco}
-                style={styles.input}
-                placeholderTextColor="#aaa"
-              />
-            </>
-          )}
-        </>
-      )}
+{tipoUsuario === 'profissional' && (
+  <>
+    <TextInput
+      placeholder="Certificado de Registro (Ex: CRM)"
+      value={certificadoRegistro}
+      onChangeText={setCertificadoRegistro}
+      style={styles.input}
+      placeholderTextColor="#aaa"
+    />
+    <TextInput
+      placeholder="Horários de Atendimento"
+      value={horariosAtendimento}
+      onChangeText={setHorariosAtendimento}
+      style={styles.input}
+      placeholderTextColor="#aaa"
+    />
+    <TextInput
+      placeholder="Dias de Atendimento"
+      value={diasAtendimento}
+      onChangeText={setDiasAtendimento}
+      style={styles.input}
+      placeholderTextColor="#aaa"
+    />
+    
+    {/* Seleção de Áreas de Atuação */}
+    <Text style={styles.label}>Área de Atuação:</Text>
+    <View style={styles.pickerContainer}>
+      <Picker
+        selectedValue={areaAtuacao}
+        style={styles.picker}
+        onValueChange={(itemValue) => {
+          setAreaAtuacao(itemValue);
+          if (itemValue !== 'Outros') setOutrosArea('');
+        }}
+      >
+        <Picker.Item label="Médico" value="Médico" />
+        <Picker.Item label="Enfermeiro" value="Enfermeiro" />
+        <Picker.Item label="Odontologista" value="Odontologista" />
+        <Picker.Item label="Psicólogo" value="Psicólogo" />
+        <Picker.Item label="Fisioterapeuta" value="Fisioterapeuta" />
+        <Picker.Item label="Farmacêutico" value="Farmacêutico" />
+        <Picker.Item label="Fonoaudiólogo" value="Fonoaudiólogo" />
+        <Picker.Item label="Nutricionista" value="Nutricionista" />
+        <Picker.Item label="Educador físico" value="Educador físico" />
+        <Picker.Item label="Terapeuta ocupacional" value="Terapeuta ocupacional" />
+        <Picker.Item label="Outros" value="Outros" />
+      </Picker>
+    </View>
+
+    {/* Campo para especificar caso seja "Outros" */}
+    {areaAtuacao === 'Outros' && (
+      <TextInput
+        placeholder="Informe sua área de atuação"
+        value={outrosArea}
+        onChangeText={setOutrosArea}
+        style={styles.input}
+        placeholderTextColor="#aaa"
+      />
+    )}
+  </>
+)}
+
 
       <TouchableOpacity style={styles.button} onPress={handleCadastro}>
         <Text style={styles.buttonText}>Cadastrar</Text>
@@ -261,6 +247,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
     backgroundColor: '#f7f7f7',
+    marginTop: 50,
   },
   title: {
     fontSize: 28,

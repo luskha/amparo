@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
     padding: 20,
+    marginTop: 50,
   },
   title: {
     fontSize: 28,
@@ -167,10 +168,10 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: '#333',
-    marginTop: 30,
+    marginTop: 20,
   },
   button: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#5dc1b9',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
