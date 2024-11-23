@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Constants from 'expo-constants';
-import { Button, Platform } from 'react-native';
+import { View, Platform, StyleSheet } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -12,8 +12,9 @@ import MedicamentosScreen from './screens/MedicamentosScreen';
 import AtividadesSociaisScreen from './screens/AtividadesSociaisScreen';
 import CadastroScreen from './screens/CadastroScreen';
 import TransportesScreen from './screens/TransportesScreen';
-import PanicButton from './screens/PanicButton';  // Importando o botão de pânico
-import ProfileScreen from './screens/ProfileScreen';  // Importando a tela de perfil
+import PanicButton from './screens/PanicButton';  // Botão de pânico
+import ProfileScreen from './screens/ProfileScreen';  // Tela de perfil
+import LottieView from 'lottie-react-native'; // Importando Lottie para animação
 import axios from 'axios';  // Adicionando a importação do Axios
 
 const Stack = createStackNavigator();
@@ -28,11 +29,19 @@ Notifications.setNotificationHandler({
 
 const App = () => {
   const [expoPushToken, setExpoPushToken] = useState('');
+  const [loading, setLoading] = useState(true); // Estado para controle do carregamento
   const notificationListener = useRef();
   const responseListener = useRef();
 
-  // Solicitar permissões de notificação
   useEffect(() => {
+    const initializeApp = async () => {
+      // Simular um carregamento inicial
+      await new Promise((resolve) => setTimeout(resolve, 3000)); // 3 segundos
+      setLoading(false); // Finalizar carregamento
+    };
+
+    initializeApp();
+
     const registerForPushNotifications = async () => {
       try {
         const token = await registerForPushNotificationsAsync();
@@ -60,61 +69,35 @@ const App = () => {
     };
   }, []);
 
+  if (loading) {
+    // Exibir tela de carregamento
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('./assets/animations/verificando.json')} // Caminho para animação
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome" screenOptions={{
         headerShown: false
-      }} >
-        <Stack.Screen 
-          name="Welcome" 
-          component={WelcomeScreen} 
-          options={{ title: 'Amparo+' }}
-        />
-        <Stack.Screen 
-          name="Login" 
-          component={LoginScreen} 
-          options={{ title: 'Login' }}
-        />
-        <Stack.Screen 
-          name="Home" 
-          component={HomeScreen} 
-          options={{ title: 'Menu Principal' }}
-        />
-        <Stack.Screen 
-          name="Agendamento" 
-          component={AgendamentoScreen} 
-          options={{ title: 'Agendar Consulta' }}
-        />
-        <Stack.Screen 
-          name="Medicamentos" 
-          component={MedicamentosScreen} 
-          options={{ title: 'Lembretes de Medicamentos' }}
-        />
-        <Stack.Screen 
-          name="AtividadesSociais" 
-          component={AtividadesSociaisScreen} 
-          options={{ title: 'Atividades Sociais' }}
-        />
-        <Stack.Screen 
-          name="Cadastro" 
-          component={CadastroScreen} 
-          options={{ title: 'Cadastre-se' }}
-        />
-        <Stack.Screen 
-          name="Transportes" 
-          component={TransportesScreen}  // Adicionando a tela de transportes
-          options={{ title: 'Transportes' }}
-        />
-        <Stack.Screen 
-          name="PanicButton" 
-          component={PanicButton}  // Adicionando a tela do botão de pânico
-          options={{ title: 'Botão de Pânico' }}
-        />
-        <Stack.Screen 
-          name="Perfil"  // Adicionando a tela de perfil
-          component={ProfileScreen}  
-          options={{ title: 'Perfil' }}
-        />
+      }}>
+        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: 'Amparo+' }} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Menu Principal' }} />
+        <Stack.Screen name="Agendamento" component={AgendamentoScreen} options={{ title: 'Agendar Consulta' }} />
+        <Stack.Screen name="Medicamentos" component={MedicamentosScreen} options={{ title: 'Lembretes de Medicamentos' }} />
+        <Stack.Screen name="AtividadesSociais" component={AtividadesSociaisScreen} options={{ title: 'Atividades Sociais' }} />
+        <Stack.Screen name="Cadastro" component={CadastroScreen} options={{ title: 'Cadastre-se' }} />
+        <Stack.Screen name="Transportes" component={TransportesScreen} options={{ title: 'Transportes' }} />
+        <Stack.Screen name="PanicButton" component={PanicButton} options={{ title: 'Botão de Pânico' }} />
+        <Stack.Screen name="Perfil" component={ProfileScreen} options={{ title: 'Perfil' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -156,5 +139,18 @@ async function registerForPushNotificationsAsync() {
   console.log('Token de notificação:', token);
   return token;
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Cor de fundo durante o carregamento
+  },
+  lottie: {
+    width: 200,
+    height: 200,
+  },
+});
 
 export default App;

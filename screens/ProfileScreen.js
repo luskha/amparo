@@ -1,16 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert, TextInput, Button, TouchableOpacity, Image } from 'react-native';
-import { Avatar, Text } from 'react-native-paper';
+import { View, StyleSheet, Alert, TextInput, TouchableOpacity } from 'react-native';
+import { Avatar, Text, Button } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import * as SecureStore from 'expo-secure-store'; // Importando o SecureStore
+import axios from 'axios';
+
+const API_BASE_URL = 'https://amparo-api-4p3q.onrender.com'; // Atualize com sua URL
+const userId = 'usuario-id-logado'; // Substitua por lógica para obter o ID do usuário logado
 
 const ProfileScreen = () => {
-  const [name, setName] = useState('');
-  const [photo, setPhoto] = useState(null);
+  const [userData, setUserData] = useState({
+    nome: '',
+    cpf: '',
+    telefone: '',
+    email: '',
+    dataNascimento: '',
+    endereco: '',
+    cep: '',
+    numeroEmergencia: '',
+    fotoPerfil: null,
+  });
 
-  // Função para escolher a imagem da galeria ou tirar foto
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Função para carregar dados do usuário
+  const fetchProfileData = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
+      setUserData(response.data);
+    } catch (error) {
+      console.error('Erro ao carregar o perfil:', error);
+    }
+  };
+
+  // Atualizar dados do usuário
+  const saveProfileData = async () => {
+    try {
+      await axios.put(`${API_BASE_URL}/users/${userId}`, userData);
+      Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Erro ao salvar dados:', error);
+      Alert.alert('Erro', 'Não foi possível salvar os dados.');
+    }
+  };
+
+  // Escolher uma foto de perfil
   const pickImage = async () => {
-    // Solicitar permissão de acesso à câmera e galeria
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('Permissão negada', 'Precisamos de permissão para acessar sua galeria.');
@@ -25,61 +60,61 @@ const ProfileScreen = () => {
     });
 
     if (!result.cancelled) {
-      setPhoto(result.uri);
-      // Salvar a foto localmente usando SecureStore
-      await SecureStore.setItemAsync('userPhoto', result.uri);
+      setUserData({ ...userData, fotoPerfil: result.uri });
     }
   };
 
-  // Função para salvar o nome no SecureStore
-  const saveName = async () => {
-    if (name.trim() === '') {
-      Alert.alert('Erro', 'O nome não pode estar vazio');
-      return;
-    }
-    await SecureStore.setItemAsync('userName', name);
-    Alert.alert('Nome salvo', `Nome salvo como ${name}`);
-  };
-
-  // Carregar foto e nome ao inicializar a tela
-  const loadProfile = async () => {
-    const savedName = await SecureStore.getItemAsync('userName');
-    const savedPhoto = await SecureStore.getItemAsync('userPhoto');
-    if (savedName) setName(savedName);
-    if (savedPhoto) setPhoto(savedPhoto);
-  };
-
-  // Usar o efeito para carregar os dados quando a tela for aberta
   useEffect(() => {
-    loadProfile();
+    fetchProfileData();
   }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Perfil</Text>
 
-      {/* Foto de perfil */}
+      {/* Foto de Perfil */}
       <TouchableOpacity onPress={pickImage} style={styles.avatarContainer}>
         <Avatar.Image
           size={120}
-          source={photo ? { uri: photo } : require('../assets/perfil1.png')}
+          source={userData.fotoPerfil ? { uri: userData.fotoPerfil } : require('../assets/perfil1.png')}
         />
         <Text style={styles.changePhotoText}>Alterar foto</Text>
       </TouchableOpacity>
 
-      {/* Nome de usuário */}
-      <TextInput
-        style={styles.input}
-        placeholder="Digite seu nome"
-        value={name}
-        onChangeText={setName}
-      />
+      {/* Dados do Usuário */}
+      {Object.keys(userData).map((key) => (
+        key !== 'fotoPerfil' && (
+          <TextInput
+            key={key}
+            style={styles.input}
+            editable={isEditing}
+            placeholder={`Digite seu ${key}`}
+            value={userData[key]}
+            onChangeText={(value) => setUserData({ ...userData, [key]: value })}
+          />
+        )
+      ))}
 
-      <TouchableOpacity style={styles.saveButton} onPress={saveName}>
-        <Text style={styles.saveButtonText}>Salvar</Text>
-      </TouchableOpacity>
-
-      {/* Outras informações do perfil podem ser inseridas aqui */}
+      {/* Botões de Ação */}
+      <View style={styles.buttonContainer}>
+        {isEditing ? (
+          <>
+            <Button mode="contained" onPress={saveProfileData} style={styles.button}>
+              Salvar
+            </Button>
+            <Button mode="text" onPress={() => setIsEditing(false)} style={styles.cancelButton}>
+              Cancelar
+            </Button>
+          </>
+        ) : (
+          <Button mode="contained" onPress={() => setIsEditing(true)} style={styles.button}>
+            Editar Perfil
+          </Button>
+        )}
+        <Button mode="outlined" onPress={() => Alert.alert('Sair', 'Função de logout aqui.')} style={styles.button}>
+          Sair
+        </Button>
+      </View>
     </View>
   );
 };
@@ -107,24 +142,21 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     padding: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 5,
   },
-  saveButton: {
-    backgroundColor: '#5dc1b9', // Cor de fundo
-    paddingVertical: 12, // Altura do botão
-    paddingHorizontal: 20, // Largura do botão
-    borderRadius: 5, // Bordas arredondadas
-    alignItems: 'center', // Centralizar o texto
-    justifyContent: 'center', // Centralizar o texto
-    width: '100%', // Tamanho do botão
+  buttonContainer: {
+    marginTop: 20,
+    width: '100%',
   },
-  saveButtonText: {
-    color: '#fff', // Cor do texto
-    fontSize: 16, // Tamanho da fonte
-    fontWeight: 'bold', // Peso da fonte
+  button: {
+    marginBottom: 10,
+  },
+  cancelButton: {
+    marginBottom: 10,
+    backgroundColor: '#ff6347',
   },
 });
 

@@ -59,7 +59,7 @@ const AgendamentoScreen = () => {
       setTimeout(() => {
         setConfirming(false); // Esconde a animação após o tempo definido
         Alert.alert('Agendamento Confirmado', `Consulta marcada para ${dataConsulta.toLocaleDateString()} às ${dataConsulta.toLocaleTimeString()}`);
-      }, 4900); // Duração da animação
+      }, 4000); // Duração da animação
     } else {
       Alert.alert('Erro', 'Por favor, preencha todos os campos');
     }
