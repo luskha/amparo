@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
-import HomeScreen from './screens/HomeScreen';
+import HomePaciente from './screens/paciente/HomePaciente';
 import AgendamentoScreen from './screens/AgendamentoScreen';
 import MedicamentosScreen from './screens/MedicamentosScreen';
 import AtividadesSociaisScreen from './screens/AtividadesSociaisScreen';
@@ -90,7 +90,7 @@ const App = () => {
       }}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: 'Amparo+' }} />
         <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
-        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Menu Principal' }} />
+        <Stack.Screen name="HomePaciente" component={HomePaciente} options={{ title: 'Menu Principal' }} />
         <Stack.Screen name="Agendamento" component={AgendamentoScreen} options={{ title: 'Agendar Consulta' }} />
         <Stack.Screen name="Medicamentos" component={MedicamentosScreen} options={{ title: 'Lembretes de Medicamentos' }} />
         <Stack.Screen name="AtividadesSociais" component={AtividadesSociaisScreen} options={{ title: 'Atividades Sociais' }} />

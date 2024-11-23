@@ -14,7 +14,7 @@ const LoginScreen = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('https://amparo-api-4p3q.onrender.com/login', {
+      const response = await axios.post('https://amparo-api-4p3q.onrender.com/auth/login', {
         email,
         password,
         isProfessional,

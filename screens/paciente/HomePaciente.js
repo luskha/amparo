@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const BOTTOM_APPBAR_HEIGHT = 80;
 
-const HomeScreen = ({ userId }) => {
+const HomePaciente = ({ userId }) => {
   const navigation = useNavigation();
   const { bottom } = useSafeAreaInsets();
   const theme = useTheme();
@@ -160,4 +160,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default HomePaciente;
