@@ -11,7 +11,7 @@ const WelcomeScreen = () => {
 
   return (
     <ImageBackground 
-      source={require('../assets/gifs/background.gif')} // Imagem de fundo
+      source={require('../assets/bg-login.png')} // Imagem de fundo
       style={styles.background}
     >
       <View style={styles.container}>

@@ -15,10 +15,10 @@ const PanicButton = ({ userId }) => {
 
     // Verifica se o tipo de conteúdo é JSON
     if (response.headers['content-type'] === 'application/json') {
-      const { numeroEmergencia } = response.data;
+      const { numeroemergencia } = response.data;
 
-      if (numeroEmergencia) {
-        const whatsappLink = `https://wa.me/${numeroEmergencia}?text=Emergência! Por favor, entre em contato imediatamente.`;
+      if (numeroemergencia) {
+        const whatsappLink = `https://wa.me/${numeroemergencia}?text=Emergência! Por favor, entre em contato imediatamente.`;
         Linking.openURL(whatsappLink);
       } else {
         Alert.alert('Erro', 'Número de emergência não registrado.');

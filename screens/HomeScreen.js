@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const BOTTOM_APPBAR_HEIGHT = 80;
 
-const HomePaciente = ({ userId }) => {
+const HomeScreen = ({ userId }) => {
   const navigation = useNavigation();
   const { bottom } = useSafeAreaInsets();
   const theme = useTheme();
@@ -16,10 +16,10 @@ const HomePaciente = ({ userId }) => {
   const handlePanic = async () => {
     try {
       const response = await axios.get(`https://amparo-api-4p3q.onrender.com/user/${userId}`);
-      const { numeroEmergencia } = response.data;
+      const { numeroemergencia } = response.data;
 
-      if (numeroEmergencia) {
-        const whatsappLink = `https://wa.me/${numeroEmergencia}?text=Emergência! Por favor, entre em contato imediatamente.`;
+      if (numeroemergencia) {
+        const whatsappLink = `https://wa.me/${numeroemergencia}?text=Emergência! Por favor, entre em contato imediatamente.`;
         Linking.openURL(whatsappLink);
       } else {
         Alert.alert('Erro', 'Número de emergência não registrado.');
@@ -160,4 +160,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomePaciente;
+export default HomeScreen;

@@ -16,7 +16,7 @@ const ProfileScreen = () => {
     dataNascimento: '',
     endereco: '',
     cep: '',
-    numeroEmergencia: '',
+    numeroemergencia: '',
     fotoPerfil: null,
   });
 

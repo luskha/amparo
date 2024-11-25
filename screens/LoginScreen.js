@@ -17,7 +17,7 @@ const LoginScreen = () => {
       const response = await axios.post('https://amparo-api-4p3q.onrender.com/auth/login', {
         email,
         password,
-        isProfessional,
+        userType: isProfessional ? 'profissional' : 'paciente',
       });
 
       const { data } = response;
@@ -26,7 +26,7 @@ const LoginScreen = () => {
       await SecureStore.setItemAsync('user', JSON.stringify(data.user));
 
       // Navega para a tela correspondente ao tipo de usuário
-      navigation.navigate(data.user.tipoUsuario === 'profissional' ? 'HomeProfissional' : 'HomePaciente');
+      navigation.navigate(data.user.tipousuario === 'profissional' ? 'ProfessionalHomeScreen' : 'HomeScreen');
     } catch (error) {
       console.error('Erro no login:', error);
       const errorMessage = error.response?.data?.message || 'Erro ao efetuar login.';
@@ -36,13 +36,19 @@ const LoginScreen = () => {
     }
   };
 
+  const handleSignupNavigation = () => {
+    // Navega para a tela de cadastro
+    navigation.navigate('Cadastro');
+  };
+
   return (
     <ImageBackground 
       source={require('../assets/bg-login.png')} 
       style={styles.background}
     >
       <View style={styles.container}>
-        <Text style={styles.title}></Text>
+        <Text style={styles.title}>Bem-vindo ao Amparo+</Text>
+
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -58,6 +64,7 @@ const LoginScreen = () => {
           value={password}
           onChangeText={setPassword}
         />
+        
         <View style={styles.switchContainer}>
           <Switch
             value={isProfessional}
@@ -67,12 +74,17 @@ const LoginScreen = () => {
             {isProfessional ? 'Profissional de Saúde' : 'Paciente'}
           </Text>
         </View>
+
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonDisabled]}
           onPress={handleLogin}
           disabled={loading}
         >
           <Text style={styles.buttonText}>{loading ? 'Carregando...' : 'Entrar'}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={handleSignupNavigation} style={styles.signupContainer}>
+          <Text style={styles.signupText}>Não tem uma conta? Cadastre-se aqui</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -133,6 +145,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  signupContainer: {
+    marginTop: 15,
+  },
+  signupText: {
+    fontSize: 16,
+    color: '#fff',
+    textDecorationLine: 'underline',
   },
 });
 

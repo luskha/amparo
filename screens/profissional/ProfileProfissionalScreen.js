@@ -16,9 +16,9 @@ const ProfileScreen = () => {
     dataNascimento: '',
     endereco: '',
     cep: '',
-    areaAtuacao: '',
+    areaatuacao: '',
     horariosAtendimento: '',
-    diasAtendimento: '',
+    diasatendimento: '',
     fotoPerfil: null,
   });
 

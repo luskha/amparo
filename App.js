@@ -6,16 +6,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
-import HomePaciente from './screens/paciente/HomePaciente';
-import AgendamentoScreen from './screens/AgendamentoScreen';
+import HomeScreen from './screens/HomeScreen';
+import ProfessionalHomeScreen from './screens/profissional/ProfessionalHomeScreen';
+import ProfessionalNavbar from './screens/profissional/ProfessionalNavbar'; // Navbar do profissional
+import AgendamentoScreen from './screens/AppointmentsScreen';
 import MedicamentosScreen from './screens/MedicamentosScreen';
 import AtividadesSociaisScreen from './screens/AtividadesSociaisScreen';
 import CadastroScreen from './screens/CadastroScreen';
 import TransportesScreen from './screens/TransportesScreen';
-import PanicButton from './screens/PanicButton';  // Botão de pânico
-import ProfileScreen from './screens/ProfileScreen';  // Tela de perfil
+import PanicButton from './screens/PanicButton'; // Botão de pânico
+import ProfileScreen from './screens/ProfileScreen'; // Tela de perfil
 import LottieView from 'lottie-react-native'; // Importando Lottie para animação
-import axios from 'axios';  // Adicionando a importação do Axios
+import axios from 'axios'; // Adicionando a importação do Axios
 
 const Stack = createStackNavigator();
 
@@ -30,6 +32,7 @@ Notifications.setNotificationHandler({
 const App = () => {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [loading, setLoading] = useState(true); // Estado para controle do carregamento
+  const [userType, setUserType] = useState(null); // Estado para diferenciar paciente/profissional
   const notificationListener = useRef();
   const responseListener = useRef();
 
@@ -83,22 +86,58 @@ const App = () => {
     );
   }
 
+  const renderScreens = () => {
+    if (userType === 'paciente') {
+      return (
+        <>
+          <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Menu Principal' }} />
+          <Stack.Screen name="Agendamento" component={AgendamentoScreen} options={{ title: 'Agendar Consulta' }} />
+          <Stack.Screen name="Medicamentos" component={MedicamentosScreen} options={{ title: 'Lembretes de Medicamentos' }} />
+          <Stack.Screen name="AtividadesSociais" component={AtividadesSociaisScreen} options={{ title: 'Atividades Sociais' }} />
+          <Stack.Screen name="Transportes" component={TransportesScreen} options={{ title: 'Transportes' }} />
+          <Stack.Screen name="PanicButton" component={PanicButton} options={{ title: 'Botão de Pânico' }} />
+          <Stack.Screen name="Perfil" component={ProfileScreen} options={{ title: 'Perfil' }} />
+        </>
+      );
+    } else if (userType === 'professional') {
+      return (
+        <Stack.Screen name="ProfessionalNavbar" component={ProfessionalNavbar} options={{ headerShown: false }} />
+      );
+    } else {
+      return (
+        <>
+          <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Menu Principal' }} />
+          <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: 'Amparo+' }} />
+          <Stack.Screen name="Login">
+            {(props) => <LoginScreen {...props} setUserType={setUserType} />}
+          </Stack.Screen>
+          <Stack.Screen name="Cadastro" component={CadastroScreen} options={{ title: 'Cadastre-se' }} />
+        </>
+      );
+    }
+  };
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome" screenOptions={{
         headerShown: false
       }}>
-        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: 'Amparo+' }} />
-        <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
-        <Stack.Screen name="HomePaciente" component={HomePaciente} options={{ title: 'Menu Principal' }} />
-        <Stack.Screen name="Agendamento" component={AgendamentoScreen} options={{ title: 'Agendar Consulta' }} />
-        <Stack.Screen name="Medicamentos" component={MedicamentosScreen} options={{ title: 'Lembretes de Medicamentos' }} />
-        <Stack.Screen name="AtividadesSociais" component={AtividadesSociaisScreen} options={{ title: 'Atividades Sociais' }} />
-        <Stack.Screen name="Cadastro" component={CadastroScreen} options={{ title: 'Cadastre-se' }} />
-        <Stack.Screen name="Transportes" component={TransportesScreen} options={{ title: 'Transportes' }} />
-        <Stack.Screen name="PanicButton" component={PanicButton} options={{ title: 'Botão de Pânico' }} />
-        <Stack.Screen name="Perfil" component={ProfileScreen} options={{ title: 'Perfil' }} />
-      </Stack.Navigator>
+        {/* {renderScreens()} */}
+          <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Menu Principal' }} />
+          <Stack.Screen name="Agendamento" component={AgendamentoScreen} options={{ title: 'Agendar Consulta' }} />
+          <Stack.Screen name="Medicamentos" component={MedicamentosScreen} options={{ title: 'Lembretes de Medicamentos' }} />
+          <Stack.Screen name="AtividadesSociais" component={AtividadesSociaisScreen} options={{ title: 'Atividades Sociais' }} />
+          <Stack.Screen name="Transportes" component={TransportesScreen} options={{ title: 'Transportes' }} />
+          <Stack.Screen name="PanicButton" component={PanicButton} options={{ title: 'Botão de Pânico' }} />
+          <Stack.Screen name="Perfil" component={ProfileScreen} options={{ title: 'Perfil' }} />
+          <Stack.Screen name="ProfessionalNavbar" component={ProfessionalNavbar} options={{ headerShown: false }} />
+          <Stack.Screen name="ProfessionalHomeScreen" component={HomeScreen} options={{ title: 'Menu Principal' }} />
+          <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: 'Amparo+' }} />
+          <Stack.Screen name="Login">
+            {(props) => <LoginScreen {...props} setUserType={setUserType} />}
+          </Stack.Screen>
+          <Stack.Screen name="Cadastro" component={CadastroScreen} options={{ title: 'Cadastre-se' }} />
+      </Stack.Navigator> 
     </NavigationContainer>
   );
 };
